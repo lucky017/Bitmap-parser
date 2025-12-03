@@ -1,0 +1,5 @@
+
+*.o
+Lib/
+output
+bitmap
