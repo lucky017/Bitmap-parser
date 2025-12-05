@@ -4,6 +4,7 @@
 
 #include<stdio.h>
 #include<sys/types.h>
+#include<stdlib.h>
 
 #define DWORD_SIZE 4
 #define WORD_SIZE 2

@@ -1,28 +1,31 @@
-# Compiler
+
 CC := gcc
+CFLAGS := -Iinclude -Wall -Wextra -O2
 
-# Collect sources
-src     := $(wildcard src/*.c)
+# Collect source files
+SRC_FILES := $(wildcard src/*.c) $(wildcard src/Header/*.c)
 
-# Turn every source .c into an object under Lib/
-lib_objs := $(patsubst src/%.c,Lib/%.o,$(src))
+# Turn each src/... into Lib/... but keep subdirectories
+OBJ_FILES := $(patsubst src/%,Lib/%,$(SRC_FILES:.c=.o))
 
-# Final target
-ALL: bitmap
+# Final executable
+TARGET := bitmap
 
-bitmap: Main.o $(lib_objs)
+all: $(TARGET)
+
+$(TARGET): Main.o $(OBJ_FILES)
 	$(CC) $^ -o $@
 
-# Rule for Main.o (stays outside Lib/)
 Main.o: Main.c
-	$(CC) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
-# Generic rule: any .c in src → .o in Lib
+# Pattern rule: src/... → Lib/...
 Lib/%.o: src/%.c
-	@mkdir -p $(dir $@)   # ensure Lib/... directory exists
-	$(CC) -c $< -o $@
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
 
-# Clean up
 clean:
-	rm -f Main.o bitmap $(lib_objs)
+	rm -f Main.o $(TARGET) $(OBJ_FILES)
+
+.PHONY: all clean
 
